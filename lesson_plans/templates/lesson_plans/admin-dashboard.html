@@ -1,0 +1,534 @@
+{% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+{% load filename_filters %}
+
+{% block content %}
+<style>
+  :root {
+    --bg: #1c1e2e;
+    --card: #1c1e2e;
+    --text: #e0e0e0;
+    --highlight: #5e81f4;
+    --shadow: rgba(94, 129, 244, 0.15);
+    --sidebar-bg: #1a1c2d;
+    --user-msg-bg: #25283b;
+    --border-radius: 8px;
+  }
+
+  .bg-card {
+    background-color: var(--card);
+  }
+
+  {% comment %} .text-theme {
+    color: var(--text);
+  } {% endcomment %}
+
+  .select-dark {
+    background-color: #1f2937;
+    color: white;
+    border: 1px solid #4b5563;
+    border-radius: 0.375rem;
+    padding: 0.5rem;
+  }
+
+  .btn-primary {
+    background-color: #3b82f6;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    transition: background-color 0.2s;
+    border: none;
+    cursor: pointer;
+  }
+
+  .btn-primary:hover {
+    background-color: #2563eb;
+  }
+
+  .table-header {
+    background-color: #374151;
+    color: #e5e7eb;
+  }
+
+  .table-row-border {
+    border-bottom: 1px solid #4b5563;
+  }
+
+  .compact-table {
+    font-size: 0.875rem;
+  }
+
+  .compact-table th,
+  .compact-table td {
+    padding: 0.75rem 1rem;
+  }
+
+  .form-grid {
+    {% comment %} display: grid; {% endcomment %}
+    grid-template-columns: 1fr auto;
+    gap: 1rem;
+    align-items: end;
+  }
+
+  .upload-section {
+    background-color: var(--card);
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+.view {
+  color: #60a5fa; /* Tailwind's text-blue-400 */
+  {% comment %} margin-left: 1rem; /* Tailwind's ml-4 */ {% endcomment %}
+}
+
+.view:hover {
+  color: #2563eb;
+}
+
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: var(--text);
+    border-bottom: 2px solid var(--highlight);
+    padding-bottom: 0.5rem;
+  }
+
+  .form-field {
+    margin-bottom: 1rem;
+  }
+  ul {
+    padding: 0 !important;
+  }
+
+  .form-field label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .checkbox-wrapper {
+    display: flex;
+    items-center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .full-width-section {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  @media (max-width: 768px) {
+    .full-width-section {
+      grid-template-columns: 1fr;
+    }
+    
+    .form-grid {
+      grid-template-columns: 1fr;
+    }
+
+  }
+</style>
+
+<div class="max-w-7xl mx-auto px-4 py-8 space-y-8">
+
+  <!-- User Role Management Section -->
+  <section class="upload-section">
+    <h2 class="section-title">User Role Management</h2>
+    <div class="full-width-section">
+      <div class="overflow-x-auto rounded-lg border border-gray-700">
+        <table class="min-w-full compact-table text-theme">
+          <thead class="table-header">
+            <tr>
+              <th class="text-left">Username</th>
+              <th class="text-left">Current Role</th>
+              <th class="text-left">Update Role</th>
+              <th class="text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-700">
+            {% for profile in users %}
+            <tr class="hover:bg-gray-800 transition-colors">
+              <td class="font-medium">{{ profile.user.username }}</td>
+              <td>
+                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full 
+                  {% if profile.role == 'admin' %}bg-blue-100 text-blue-800{% else %}bg-gray-100 text-gray-800{% endif %}">
+                  {{ profile.role|capfirst }}
+                </span>
+              </td>
+              <td>
+                <form method="POST" action="{% url 'update_user_role' %}" class="inline-flex gap-2 items-center" id="role-form-{{ profile.user.id }}">
+                  {% csrf_token %}
+                  <input type="hidden" name="user_id" value="{{ profile.user.id }}">
+                  <select name="new_role" class="select-dark text-sm">
+                    <option value="client" {% if profile.role == 'client' %}selected{% endif %}>Client</option>
+                    <option value="admin" {% if profile.role == 'admin' %}selected{% endif %}>Admin</option>
+                  </select>
+                </form>
+              </td>
+              <td class="text-center">
+                <button type="submit" form="role-form-{{ profile.user.id }}" class="btn-primary text-sm px-3 py-1">
+                  Update
+                </button>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="bg-gray-800 p-4 rounded-lg">
+        <h3 class="text-lg font-medium text-theme mb-3">Role Information</h3>
+        <div class="space-y-2 text-sm text-gray-300">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 bg-blue-500 rounded-full"></span>
+            <span><strong>Admin:</strong> Full system access</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 bg-gray-500 rounded-full"></span>
+            <span><strong>Client:</strong> Limited access</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<section class="upload-section ">
+   <h2 class="section-title">Pinecone Documents</h2>
+  <div class="max-h-[350px] overflow-y-auto">
+  {% for doc in pinecone_documents %}
+    <div class="p-1.5 rounded">
+      <h4 class="text-sm font-semibold text-gray-800">{{ doc.title }}</h4>
+      <div class="flex flex-wrap justify-between text-s text-white mt-1 pr-5">
+        <div class="flex gap-25">
+          <p><strong>Tags:</strong> {{ doc.tag_names|join:", " }}</p>
+          <p><strong>Chunks:</strong> {{ doc.chunk_count }}</p>
+          <p><strong>Uploaded:</strong> {{ doc.uploaded_at }}</p>
+        </div>
+
+        <form method="POST" action="{% url 'delete_pinecone_document' doc.id %}" onsubmit="return confirm('Are you sure you want to delete this document and its vectors?');">
+        {% csrf_token %}
+        <button type="submit" class="text-red-500 text-xs mt-1 hover:underline">Delete</button>
+        </form>
+      </div>
+    </div>
+
+    {% if not forloop.last %}
+      <hr class="border-t border-gray-300 my-2">
+    {% endif %}
+  {% empty %}
+    <p class="text-sm text-gray-600">No documents found in Pinecone.</p>
+  {% endfor %}
+  </div>
+</section>
+
+  <!-- Tag Management Section -->
+  <section class="upload-section">
+    <h2 class="section-title">Tag Management</h2>
+    <div class="full-width-section">
+      <div>
+        <p class="text-gray-400 mb-4">Create and manage tags for organizing content across the system.</p>
+        <form method="POST" class="form-grid">
+          {% csrf_token %}
+          <div class="form-field">
+            <label for="{{ tag_form.name.id_for_label }}">Tag Name</label>
+            {{ tag_form.name|add_class:"select-dark w-full" }}
+          </div>
+          <button type="submit" name="upload_tag" class="btn-primary">Add Tag</button>
+        </form>
+      </div>
+         <div class="bg-gray-800 p-4 rounded-lg w-full">
+      <h3 class="text-lg font-medium text-theme mb-3">Uploaded Tags</h3>
+      <div class="max-h-96 overflow-y-auto space-y-2 pr-2" style="max-height: 200px;">
+      <ul class="space-y-2 text-sm text-gray-300">
+        {% for file in tags %}
+          <li class="flex justify-between items-center bg-gray-700 p-2 rounded">
+            <span>{{ file.name }}</span>
+            <!-- Delete button placeholder -->
+            <form method="POST" action="{% url 'delete_file' 'tag' file.id %}" onsubmit="return confirm('Delete this Tag?');">
+              {% csrf_token %}
+              <button type="submit" class="text-red-400 hover:text-red-600">Delete</button>
+            </form>
+          </li>
+        {% empty %}
+          <li class="text-gray-500">No files uploaded yet.</li>
+        {% endfor %}
+      </ul>
+    </div>
+    </div>
+    </div>
+  </section>
+
+  <!-- Philosophy Management Section -->
+<section class="upload-section">
+  <h2 class="section-title">Philosophy Management</h2>
+  <div class="full-width-section">
+    <div>
+      <p class="text-gray-400 mb-4">Upload philosophy documents that define system behavior and decision-making frameworks.</p>
+      <form method="POST" enctype="multipart/form-data" class="space-y-4">
+        {% csrf_token %}
+        <div class="form-field">
+          <label for="{{ philosophy_form.title.id_for_label }}">Philosophy Title</label>
+          {{ philosophy_form.title|add_class:"select-dark w-full" }}
+        </div>
+        <div class="form-field">
+          <label for="{{ philosophy_form.file.id_for_label }}">Upload File</label>
+          {{ philosophy_form.file|add_class:"select-dark w-full" }}
+        </div>
+        <div class="checkbox-wrapper">
+          {{ philosophy_form.is_global }}
+          <label for="{{ philosophy_form.is_global.id_for_label }}" class="text-theme">Make Global (Available to all users)</label>
+        </div>
+        <button type="submit" name="upload_philosophy" class="btn-primary">Upload Philosophy</button>
+      </form>
+    </div>
+
+    <div class="bg-gray-800 p-4 rounded-lg w-full">
+      <h3 class="text-lg font-medium text-theme mb-3">Uploaded Philosophy Files</h3>
+      <ul class="space-y-2 text-sm text-gray-300">
+        {% for file in philosophy_files %}
+          <li class="flex justify-between items-center bg-gray-700 p-2 rounded">
+            <span>{{ file.title }} ({{ file.file.name|basename }})</span>
+              <div class="flex items-center space-x-4">
+
+            <!-- Delete button placeholder -->
+             <form method="GET" action="{% url 'view_file' 'philosophy' file.id %}" target="_blank">
+              <button type="submit" class="text-blue-400 hover:text-blue-600">View</button>
+            </form>
+            <form method="POST" action="{% url 'delete_file' 'philosophy' file.id %}" onsubmit="return confirm('Delete this file?');">
+              {% csrf_token %}
+              <button type="submit" class="text-red-400 hover:text-red-600">Delete</button>
+            </form>
+            <form method="GET" action="{% url 'download_file' 'philosophy' file.id %}">
+              <button type="submit" class="text-green-400 hover:text-green-600 ml-4">Download</button>
+            </form>
+            
+              </div>
+
+          </li>
+        {% empty %}
+          <li class="text-gray-500">No files uploaded yet.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+ <!-- Persona Management Section -->
+<section class="upload-section">
+  <h2 class="section-title">Persona Management</h2>
+  <div class="full-width-section">
+    <div>
+      <p class="text-gray-400 mb-4">Define character personas and behavioral patterns for AI interactions.</p>
+      <form method="POST" enctype="multipart/form-data" class="space-y-4">
+        {% csrf_token %}
+        <div class="form-field">
+          <label for="{{ persona_form.title.id_for_label }}">Persona Title</label>
+          {{ persona_form.title|add_class:"select-dark w-full" }}
+        </div>
+        <div class="form-field">
+          <label for="{{ persona_form.file.id_for_label }}">Upload File</label>
+          {{ persona_form.file|add_class:"select-dark w-full" }}
+        </div>
+        <button type="submit" name="upload_persona" class="btn-primary">Upload Persona</button>
+      </form>
+    </div>
+    <div class="bg-gray-800 p-4 rounded-lg">
+      <h3 class="text-lg font-medium text-theme mb-3">Uploaded Personas</h3>
+      <ul class="text-sm text-gray-300 space-y-1">
+        {% for file in persona_files %}
+        <li class="flex justify-between items-center bg-gray-700 p-2 rounded">
+            <span>{{ file.title }} ({{ file.file.name|basename }})</span>
+            <div class="flex items-center space-x-4">
+            <!-- Delete button placeholder -->
+              <form method="GET" action="{% url 'view_file' 'persona' file.id %}" target="_blank">
+            <button type="submit" class="text-blue-400 hover:text-blue-600">View</button>
+            </form>
+            <form method="POST" action="{% url 'delete_file' 'persona' file.id %}" onsubmit="return confirm('Delete this file?');">
+              {% csrf_token %}
+              <button type="submit" class="text-red-400 hover:text-red-600">Delete</button>
+            </form>
+            <form method="GET" action="{% url 'download_file' 'persona' file.id %}">
+              <button type="submit" class="text-green-400 hover:text-green-600 ml-4">Download</button>
+            </form>
+            </div>
+          </li>
+        {% empty %}
+        <li class="text-gray-500">No files uploaded yet.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</section>
+<!-- Voice Management Section -->
+<section class="upload-section">
+  <h2 class="section-title">Voice Management</h2>
+  <div class="full-width-section">
+    <div>
+      <p class="text-gray-400 mb-4">Configure voice characteristics and speech patterns for audio interactions.</p>
+      <form method="POST" enctype="multipart/form-data" class="space-y-4">
+        {% csrf_token %}
+        <div class="form-field">
+          <label for="{{ voice_form.title.id_for_label }}">Voice Title</label>
+          {{ voice_form.title|add_class:"select-dark w-full" }}
+        </div>
+        <div class="form-field">
+          <label for="{{ voice_form.file.id_for_label }}">Upload File</label>
+          {{ voice_form.file|add_class:"select-dark w-full" }}
+        </div>
+        <button type="submit" name="upload_voice" class="btn-primary">Upload Voice</button>
+      </form>
+    </div>
+    <div class="bg-gray-800 p-4 rounded-lg">
+      <h3 class="text-lg font-medium text-theme mb-3">Uploaded Voices</h3>
+      <ul class="text-sm text-gray-300 space-y-1">
+        {% for file in voice_files %}
+       <li class="flex justify-between items-center bg-gray-700 p-2 rounded">
+            <span>{{ file.title }} ({{ file.file.name|basename }})</span>
+            <div class="flex items-center space-x-4">
+            <!-- Delete button placeholder -->
+              <form method="GET" action="{% url 'view_file' 'voice' file.id %}" target="_blank">
+            <button type="submit" class="text-blue-400 hover:text-blue-600">View</button>
+            </form>
+            <form method="POST" action="{% url 'delete_file' 'voice' file.id %}" onsubmit="return confirm('Delete this file?');">
+              {% csrf_token %}
+              <button type="submit" class="text-red-400 hover:text-red-600">Delete</button>
+            </form>
+            <form method="GET" action="{% url 'download_file' 'voice' file.id %}">
+              <button type="submit" class="text-green-400 hover:text-green-600 ml-4">Download</button>
+            </form>
+           
+            </div>
+
+          </li>
+        {% empty %}
+        <li class="text-gray-500">No files uploaded yet.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Tone Management Section -->
+<section class="upload-section">
+  <h2 class="section-title">Tone Management</h2>
+  <div class="full-width-section">
+    <div>
+      <p class="text-gray-400 mb-4">Set emotional tone and communication style for different interaction contexts.</p>
+      <form method="POST" enctype="multipart/form-data" class="space-y-4">
+        {% csrf_token %}
+        <div class="form-field">
+          <label for="{{ tone_form.title.id_for_label }}">Tone Title</label>
+          {{ tone_form.title|add_class:"select-dark w-full" }}
+        </div>
+        <div class="form-field">
+          <label for="{{ tone_form.file.id_for_label }}">Upload File</label>
+          {{ tone_form.file|add_class:"select-dark w-full" }}
+        </div>
+        <button type="submit" name="upload_tone" class="btn-primary">Upload Tone</button>
+      </form>
+    </div>
+    <div class="bg-gray-800 p-4 rounded-lg">
+      <h3 class="text-lg font-medium text-theme mb-3">Uploaded Tones</h3>
+      <ul class="text-sm text-gray-300 space-y-1">
+        {% for file in tone_files %}
+        <li class="flex justify-between items-center bg-gray-700 p-2 rounded">
+            <span>{{ file.title }} ({{ file.file.name|basename }})</span>
+            <div class="flex items-center space-x-4">
+
+            <!-- Delete button placeholder -->
+              <form method="GET" action="{% url 'view_file' 'tone' file.id %}" target="_blank">
+            <button type="submit" class="text-blue-400 hover:text-blue-600">View</button>
+            </form>
+            <form method="POST" action="{% url 'delete_file' 'tone' file.id %}" onsubmit="return confirm('Delete this file?');">
+              {% csrf_token %}
+              <button type="submit" class="text-red-400 hover:text-red-600">Delete</button>
+            </form>
+            <form method="GET" action="{% url 'download_file' 'tone' file.id %}">
+              <button type="submit" class="text-green-400 hover:text-green-600 ml-4">Download</button>
+            </form>
+           
+            </div>
+
+          </li>
+        {% empty %}
+        <li class="text-gray-500">No files uploaded yet.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Output Format Management Section -->
+<section class="upload-section">
+  <h2 class="section-title">Output Format Management</h2>
+  <div class="full-width-section">
+    <div>
+      <p class="text-gray-400 mb-4">Define structured output formats and templates for consistent response formatting.</p>
+      <form method="POST" enctype="multipart/form-data" class="space-y-4">
+        {% csrf_token %}
+        <div class="form-field">
+          <label for="{{ format_form.title.id_for_label }}">Format Title</label>
+          {{ format_form.title|add_class:"select-dark w-full" }}
+        </div>
+        <div class="form-field">
+          <label for="{{ format_form.file.id_for_label }}">Upload File</label>
+          {{ format_form.file|add_class:"select-dark w-full" }}
+        </div>
+        <button type="submit" name="upload_format" class="btn-primary">Upload Format</button>
+      </form>
+    </div>
+    <div class="bg-gray-800 p-4 rounded-lg">
+      <h3 class="text-lg font-medium text-theme mb-3">Uploaded Formats</h3>
+      <ul class="text-sm text-gray-300 space-y-1">
+        {% for file in format_files %}
+       <li class="flex justify-between items-center bg-gray-700 p-2 rounded">
+            <span>{{ file.title }} ({{ file.file.name|basename }})</span>
+            <div class="flex items-center space-x-4">
+
+            <!-- Delete button placeholder -->
+              <form method="GET" action="{% url 'view_file' 'outputformat' file.id %}" target="_blank">
+            <button type="submit" class="text-blue-400 hover:text-blue-600">View</button>
+            </form>
+            <form method="POST" action="{% url 'delete_file' 'outputformat' file.id %}" onsubmit="return confirm('Delete this file?');">
+              {% csrf_token %}
+              <button type="submit" class="text-red-400 hover:text-red-600">Delete</button>
+            </form>
+            <form method="GET" action="{% url 'download_file' 'outputformat' file.id %}">
+              <button type="submit" class="text-green-400 hover:text-green-600 ml-4">Download</button>
+            </form>
+           
+            </div>
+          </li>
+        {% empty %}
+        <li class="text-gray-500">No files uploaded yet.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+</div>
+
+<script>
+// Fix form submission for role updates
+document.addEventListener('DOMContentLoaded', function() {
+  const forms = document.querySelectorAll('form[action*="update_user_role"]');
+  forms.forEach((form, index) => {
+    form.id = `role-form-${index}`;
+    const button = form.closest('tr').querySelector('button[type="submit"]');
+    if (button) {
+      button.setAttribute('form', `role-form-${index}`);
+    }
+  });
+});
+</script>
+
+{% endblock %}
