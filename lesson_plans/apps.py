@@ -7,3 +7,5 @@ class LessonPlansConfig(AppConfig):
 
     def ready(self):
         import lesson_plans.signals
+
+# touched on 2025-06-13T18:49:54.501727Z
