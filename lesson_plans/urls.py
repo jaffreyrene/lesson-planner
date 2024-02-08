@@ -12,3 +12,5 @@ urlpatterns = [
    path('delete-pinecone-document/<int:doc_id>/', views.delete_pinecone_document, name='delete_pinecone_document'),
    path("delete_chat/<int:chat_id>/", views.delete_chat, name="delete_chat"),
 ]
+
+# touched on 2025-06-13T18:50:03.181737Z
