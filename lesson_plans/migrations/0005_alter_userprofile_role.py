@@ -16,3 +16,5 @@ class Migration(migrations.Migration):
             field=models.CharField(choices=[('admin', 'Admin'), ('client', 'Client')], max_length=20),
         ),
     ]
+
+# touched on 2025-06-13T18:50:26.027630Z
