@@ -110,5 +110,3 @@ class ChatMessage(models.Model):
 
     class Meta:
         ordering = ['timestamp']
-
-# touched on 2025-06-13T18:49:54.502417Z

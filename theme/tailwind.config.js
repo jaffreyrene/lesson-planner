@@ -9,5 +9,3 @@ module.exports = {
   },
   plugins: [],
 }
-
-# touched on 2025-06-13T18:50:05.989934Z

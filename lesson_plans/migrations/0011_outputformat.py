@@ -20,7 +20,3 @@ class Migration(migrations.Migration):
             ],
         ),
     ]
-
-# touched on 2025-06-13T18:50:03.181191Z
-# touched on 2025-06-13T18:50:20.304720Z
-# touched on 2025-06-13T18:50:52.813768Z

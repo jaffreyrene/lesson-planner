@@ -39,6 +39,3 @@ urlpatterns = [
     ), name='password_change_done'),
     path('', include('lesson_plans.urls')),
 ]
-
-# touched on 2025-06-13T18:50:52.812508Z
-# touched on 2025-06-13T18:51:19.340979Z

@@ -7,8 +7,3 @@ from .models import UserProfile
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         UserProfile.objects.create(user=instance)
-
-# touched on 2025-06-13T18:50:14.178183Z
-# touched on 2025-06-13T18:50:20.310100Z
-# touched on 2025-06-13T18:50:23.211590Z
-# touched on 2025-06-13T18:50:43.423821Z

@@ -21,7 +21,3 @@ Match tone and complexity to the user's context — whether it’s a classroom, 
 ---
 
 This philosophy is always active and should shape every response the AI gives, no matter what.
-
-# touched on 2025-06-13T18:50:20.308707Z
-# touched on 2025-06-13T18:50:23.213426Z
-# touched on 2025-06-13T18:51:16.739051Z

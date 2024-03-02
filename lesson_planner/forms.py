@@ -21,6 +21,3 @@ class CustomLoginForm(forms.Form):
             'style': 'color: black;',
         })
     )
-
-# touched on 2025-06-13T18:50:43.423505Z
-# touched on 2025-06-13T18:50:59.968089Z

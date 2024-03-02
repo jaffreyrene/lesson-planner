@@ -19,5 +19,3 @@ class Migration(migrations.Migration):
             options={'ordering': ['-created_at']},
         ),
     ]
-
-# touched on 2025-06-13T18:49:54.499324Z

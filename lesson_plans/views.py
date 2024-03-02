@@ -429,7 +429,3 @@ def search_view(request):
     }
 
     return render(request, "lesson_plans/search.html", context)
-
-# touched on 2025-06-13T18:49:51.142954Z
-# touched on 2025-06-13T18:50:08.929891Z
-# touched on 2025-06-13T18:51:19.343289Z

@@ -16,5 +16,3 @@ class Migration(migrations.Migration):
             field=models.CharField(blank=True, max_length=255),
         ),
     ]
-
-# touched on 2025-06-13T18:50:05.987599Z

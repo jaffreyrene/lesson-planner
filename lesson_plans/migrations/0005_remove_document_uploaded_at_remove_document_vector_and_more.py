@@ -34,6 +34,3 @@ class Migration(migrations.Migration):
             field=models.FileField(upload_to='documents/'),
         ),
     ]
-
-# touched on 2025-06-13T18:49:57.648069Z
-# touched on 2025-06-13T18:50:03.183927Z
