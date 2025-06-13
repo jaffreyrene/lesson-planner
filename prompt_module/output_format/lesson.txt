@@ -1,0 +1,25 @@
+[FORMAT: LESSON PLAN]
+
+Title: [Insert Topic Title Here]
+
+Objective:
+- Clearly state what the student will learn.
+- Use actionable verbs (e.g., analyze, describe, evaluate).
+
+Materials Needed:
+- List required tools, texts, or resources.
+
+Lesson Outline:
+1. Introduction (context, hook, and importance of topic)
+2. Explanation (detailed breakdown of concepts)
+3. Activity (interactive exercise or discussion)
+4. Summary (key takeaways)
+
+Assessment:
+- Short quiz or reflection questions
+
+Extension:
+- Optional additional reading or advanced activity
+
+Tone: Clear, educational, and structured for a teacher or instructor.
+Audience: Teachers preparing for class.

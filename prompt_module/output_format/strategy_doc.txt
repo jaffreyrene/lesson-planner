@@ -1,0 +1,23 @@
+[FORMAT: STRATEGY DOCUMENT]
+
+Title: [Strategy Name]
+
+Objective:
+- What this strategy aims to achieve
+
+Background:
+- Key context or problem this strategy addresses
+
+Key Pillars:
+1. Pillar One – [Brief title + details]
+2. Pillar Two – [Brief title + details]
+3. Pillar Three – [Brief title + details]
+
+Implementation Plan:
+- Timeline, roles, resources, and actions
+
+Metrics for Success:
+- How progress and impact will be measured
+
+Tone: Executive, logical, confident.
+Audience: Stakeholders, leadership, project team.
